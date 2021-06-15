@@ -1,0 +1,74 @@
+<div id="container">
+  <div id="search_bar_row" class="sticky">
+    <input id="searchInput" class="searchBar" type="text" placeholder="Search..">
+  </div>
+  <div id="movies_container" class="container">
+
+    <div id="movies_grid_row" class="row">
+    </div>
+  </div>
+
+  <script>
+
+  var moviesList = null;
+    app.page("home", function() {
+      // initialize view variables
+      // present the view - load data and show:
+      return function(params) {
+        moviesList = getMovies();
+        $('#searchBar').text('');
+        $("#searchInput").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#movies_grid_row .col-md-4").filter(function() {
+        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+      }
+    });
+
+    function getMovies() {
+      $.LoadingOverlay("show");
+      $.ajax({
+        url: 'rest/movies',
+        method: 'GET',
+        success: function(result) {
+          var html = '';
+          for (var i = 0; i < result.length; i++) {
+            html += '<div class="col-md-4">';
+            html += '<div class="card text-center">';
+            html += '<img class="card-img-top moviePoster" src="' + result[i].image_url + '">';
+            html += '<div class="card-body p--none">';
+            html += '<a  href="#movieDetails:' + result[i].id + '" class="btn btn-primary detailsBtn">View details</a>';
+            html += '<h5 class="card-title">' + result[i].title + '</h5>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+          }
+          $('#movies_grid_row').html(html);
+          $.LoadingOverlay("hide");
+        },
+        error: function(error) {
+          if (error.status == 403) {
+          $('#loginModal').toggle();
+          }
+          $.LoadingOverlay("hide");
+          toastr.error('Something went wrong.');
+        }
+      });
+    }
+
+    function deleteUser(id) {
+      $.ajax({
+        url: 'rest/user/' + id,
+        method: 'DELETE',
+        success: function(result) {
+          toastr.success('User deleted');
+          getUsers();
+        },
+        error: function() {
+          toastr.success('User not deleted');
+          getUsers();
+        }
+      })
+    }
+  </script>

@@ -1,0 +1,344 @@
+<div id="container">
+  <h2 style="color:white">My Profile</h2>
+  <div class="container details">
+
+    <div class="row">
+      <div class="col">
+
+        <form id="updateUserForm">
+        <div class="form-group">
+          <label for="exampleInputEmail1">First Name</label>
+          <input id="firstNameInput" name="firstName" type="text" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="exampleInputPassword1">Last Name</label>
+          <input id="lastNameInput" name="lastName" type="text" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="exampleInputPassword1">Email</label>
+          <input id="emailInput" type="text" name="emailAddress" class="form-control">
+        </div>
+
+        <button id="updateUserBtn" type="submit" class="btn btn-warning">Update</button>
+      </form>
+
+
+        <div class="changePwBtn">
+          <button data-toggle="modal" data-target="#changePwModal" id="pwNameChangeBtn" class="btn btn-success">Change Password</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <div>
+          <!-- <button  class="addMovieBtn btn btn-primary" data-toggle="modal" data-target="#addMovieModal" >Add movie</button> -->
+          <button  class="adminonly addMovieBtn btn btn-warning" data-toggle="modal" data-target="#addMovieModal"  style="display:none;">Add movie</button>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</div>
+
+<div class="modal fade" id="changePwModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form id="changePwForm">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Change password</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+
+          <div class="form-group">
+            <label for="exampleInputPassword1">New password: </label>
+            <input type="password" name="newPassword" id="new-password" class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label for="exampleInputPassword1">Confirm password: </label>
+            <input type="password" id="cfrmPassword" name="newPasswordConfirm" class="form-control">
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-warning">Change</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="addMovieModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form id="addMovieForm">
+        <div class="modal-header">
+          <h5 class="modal-title">Add a movie</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+
+          <div class="form-group">
+            <label>Title: </label>
+            <input type="text" name="movieTitle" class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label>Description: </label>
+            <input type="text" name="movieDescription" id="lname" class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label for="exampleInputEmail1">Image Url: </label>
+            <input type="url" name="movieImageUrl" class="form-control" >
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-warning">Add</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  var loggedUser = null;
+  app.page("myProfile", function() {
+    loggedUser = window.localStorage.getItem('user');
+    if (loggedUser) {
+      loggedUser = JSON.parse(loggedUser);
+
+    } else {
+      loggedUser = null;
+    }
+    return function(params) {
+      $("#updateUserBtn").hide()
+      getUserDetails(loggedUser.id);
+      if(loggedUser.role_name == 'User'){
+        $('.adminonly').hide();
+      } else{
+        $('.adminonly').show();
+      }
+      $("#updateUserBtn").click(function(){
+        $.ajax({
+          type: 'POST',
+          url: 'rest/user',
+          data: "&user_id="+loggedUser.id+"&user_field=first_name&new_value="+ $('#firstNameInput').val(),
+          beforeSend: function(xhr) {
+            xhr.setRequestHeader('X-Authorization', loggedUser.token)
+          },
+          success: function(result) {
+            $.LoadingOverlay("hide");
+
+          },
+          error: function() {
+            $.LoadingOverlay("hide");
+            toastr.error('Something went wrong!');
+          }
+        });
+      });
+    }
+  });
+
+  function checkIfFieldChanged(original, newVal){
+    return (original == newVal);
+  }
+
+  function getUserDetails(id) {
+    $.LoadingOverlay("show");
+    $.ajax({
+      type: 'GET',
+      url: 'rest/user',
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader('X-Authorization', loggedUser.token)
+      },
+      data: "&id=" + id,
+      success: function(result) {
+        $.LoadingOverlay("hide");
+        $('#firstNameInput').val(result[0].first_name);
+        $('#lastNameInput').val(result[0].last_name);
+        $('#emailInput').val(result[0].email);
+
+        $("#firstNameInput").change(function() {
+          console.log(result[0].first_name);
+          console.log($('#firstNameInput').val());
+
+          if(!checkIfFieldChanged(result[0].first_name,$('#firstNameInput').val())){
+            $("#updateUserBtn").show();
+          } else{
+            $("#updateUserBtn").hide();
+          }
+        });
+
+        $("#lastNameInput").change(function() {
+          console.log(result[0].first_name);
+          console.log($('#firstNameInput').val());
+          if(!checkIfFieldChanged(result[0].last_name,$('#lastNameInput').val())){
+            $("#updateUserBtn").show();
+          }else{
+            $("#updateUserBtn").hide();
+          }
+        });
+
+        $("#emailInput").change(function() {
+          console.log(result[0].first_name);
+          console.log($('#firstNameInput').val());
+          if(!checkIfFieldChanged(result[0].email,$('#emailInput').val())){
+            $("#updateUserBtn").show();
+          }else{
+            $("#updateUserBtn").hide();
+          }
+        });
+      },
+      error: function() {
+        $.LoadingOverlay("hide");
+        toastr.error('Something went wrong!');
+      }
+    });
+  }
+
+  $('#updateUserForm').validate({
+    rules: {
+      firstName: {
+        required: true
+      },
+      lastName: {
+        required: true
+      },
+      emailAddress: {
+        required: true,
+      },
+    },
+    messages: {
+      firstName: {
+        required: "Please enter your first name."
+      },
+      lastName: {
+        required: "Please enter your last name."
+      },
+      emailAddress:{
+        required: "Please enter your email address."
+      },
+    },
+    submitHandler: function(form) {
+      //ajax call
+      $.LoadingOverlay("show");
+      $.ajax({
+        url: 'rest/user/'+loggedUser.id,
+        method: 'POST',
+        data:$("#updateUserForm").serialize(),
+        beforeSend: function(xhr) {
+          xhr.setRequestHeader('X-Authorization', loggedUser.token)
+        },
+        success: function(result) {
+          $.LoadingOverlay("hide");
+          toastr.success('User updated');
+          getUserDetails(loggedUser.id);
+        },
+        error: function() {
+          $.LoadingOverlay("hide");
+          toastr.error('User not updated');
+        }
+      })
+    }
+  });
+
+  $('#addMovieForm').validate({
+    rules: {
+      movieTitle: {
+        required: true
+      },
+      movieDescription: {
+        required: true
+      },
+      movieImageUrl: {
+        required: true,
+      },
+    },
+    messages: {
+      movieTitle: {
+        required: "Please enter the movie title."
+      },
+      movieDescription: {
+        required: "Please enter the movie description."
+      },
+      movieImageUrl:{
+        required: "Please enter the movie poster url."
+      },
+    },
+    submitHandler: function(form) {
+      //ajax call
+      $.LoadingOverlay("show");
+      $.ajax({
+        url: 'rest/movie',
+        method: 'POST',
+        data:$("#addMovieForm").serialize(),
+        beforeSend: function(xhr) {
+          xhr.setRequestHeader('X-Authorization', loggedUser.token)
+        },
+        success: function(result) {
+          $('#addMovieModal').toggle();
+          $.LoadingOverlay("hide");
+          toastr.success('Movie added.');
+        },
+        error: function() {
+          $.LoadingOverlay("hide");
+          toastr.error('Movie not added.');
+        }
+      })
+    }
+  });
+
+  $('#changePwForm').validate({
+    rules: {
+      newPassword: {
+        required: true,
+        minlength: 6
+      },
+      newPasswordConfirm: {
+        minlength: 6,
+        equalTo: '#new-password'
+      }
+    },
+    messages: {
+      newPassword: {
+        minlength: jQuery.validator.format("Please, at least {0} characters are necessary")
+      },
+      newPasswordConfirm: {
+        minlength: jQuery.validator.format("Please, at least {0} characters are necessary"),
+        equalTo: "Please confirm your password."
+      }
+    },
+    submitHandler: function(form) {
+      //ajax call
+      $.LoadingOverlay("show");
+      $.ajax({
+        url: 'rest/user/changePassword/'+ loggedUser.id,
+        method: 'POST',
+        data:$("#changePwForm").serialize(),
+        beforeSend: function(xhr) {
+          xhr.setRequestHeader('X-Authorization', loggedUser.token)
+        },
+        success: function(result) {
+          $.LoadingOverlay("hide");
+          $('#changePwModal').toggle();
+          toastr.success('Password changed successfully.');
+        },
+        error: function() {
+          $.LoadingOverlay("hide");
+          toastr.error('Password not changed.');
+        }
+      })
+    }
+  });
+</script>

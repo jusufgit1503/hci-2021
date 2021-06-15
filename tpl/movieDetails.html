@@ -1,0 +1,315 @@
+<div class="movieDetailsContainer" id="container">
+  <div class="container">
+    <div class="row">
+      <div class="col-3" id="imagediv">
+        <img id="movieImage" />
+      </div>
+
+      <div class="col moviedetailsdiv">
+        <h1 class="movie-title"></h1>
+        <p class="movie-description"></p>
+      </div>
+    </div>
+
+    <div class="row">
+        <div id="addReviewBtnDiv">
+          <button data-toggle="modal" data-target="#addReviewModal" class="addReviewBtn btn btn-warning">Add review</button>
+        </div>
+
+        <div id="addToFavouritesBtnDiv">
+          <button class="addToFavouritesBtn btn btn-warning">Add to favourites</button>
+        </div>
+
+        <div id="removeFromFavouritesBtnDiv">
+          <button class="removeFromFavouritesBtn btn btn-danger">Remove from favourites</button>
+        </div>
+
+        <div id="removeMovieBtnDiv">
+          <button class="adminonly removeMovieBtn btn btn-danger">Remove this movie</button>
+        </div>
+    </div>
+
+
+    <div class="row" id="reviewsrow">
+    </div>
+
+    <div class="noReviewsDiv" style=" display:none;">
+      <p class="noReviewsLabel" style="font-size:30px;color:white; text-align:center; margin-top:30px;">There are no reviews for this movie :(</p>
+    </div>
+
+  </div>
+
+  <!-- Add review modal -->
+  <div class="modal fade" id="addReviewModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form id="addReviewForm">
+          <div class="modal-header">
+            <h5 class="modal-title">Add a review</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="exampleInputEmail1">Write your comment:</label>
+              <textarea type="text" name="reviewCommentText" id="reviewComment" class="form-control" rows="6"></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-warning">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+
+  var globalMovieId = null;
+  var loggedUser = null;
+  app.page("movieDetails", function() {
+    // initialize view variables
+    loggedUser = window.localStorage.getItem('user');
+    // present the view - load data and show:
+    return function(params) {
+      $.LoadingOverlay("show");
+      $('.adminonly').hide();
+      $('.removeFromFavouritesBtn').hide();
+
+      var movieId = parseInt(params);
+      getMovieReviewByMovieId(movieId);
+      getMovieById(movieId);
+      globalMovieId = movieId;
+      checkIfAddedToFavourites(globalMovieId);
+
+
+      $.LoadingOverlay("hide");
+
+      $('.removeMovieBtn').click(function(){
+        deleteMovie(globalMovieId);
+      });
+
+      $('.addToFavouritesBtn').click(function(){
+        addToFavourites();
+      })
+
+      $('.removeFromFavouritesBtn').click(function(){
+        removeFromFavourites();
+      })
+    }
+  });
+
+  function getMovieReviewByMovieId(id) {
+    $.get("rest/movie-reviews/" + id, function(data) {
+      var html = '';
+      for (var i = 0; i < data.length; i++) {
+        html += '<div class="col-6">';
+        html += '<button class="btn btn-danger adminonly" onclick="deleteReview('+ data[i].review_id +')">Remove</button>';
+        html += '<div class="reviewbox">';
+        html += '<h6 class="reviewuser">by ' + data[i].postedBy + '</h6>';
+        html += '<p class="comment">' + data[i].comment + '</p>';
+        html += '<h6 class="reviewdate">Date posted: '+data[i].date_created+'</h6>';
+        html += '</div>';
+        html += '</div>';
+      }
+      $('#reviewsrow').html(html);
+
+      if(data.length > 0){
+        $('.noReviewsDiv').hide();
+      } else {
+        $('.noReviewsDiv').show();
+      }
+      if (loggedUser) {
+        var loggedUserParsed = JSON.parse(loggedUser);
+        if(loggedUserParsed.role_name == 'User'){
+          $('.adminonly').hide();
+          //$('.deleteBtn').hide();
+        } else{
+          $('.adminonly').show();
+          //$('.deleteBtn').show();
+        }
+      } else {
+        $('.addReviewBtn').hide();
+        $('.addToFavouritesBtn').hide();
+        $('.adminonly').hide();
+        //$('.deleteBtn').hide();
+      }
+    })
+  }
+
+  function deleteReview(id) {
+    $.LoadingOverlay("show");
+    $.ajax({
+      url: 'rest/movie-review?id='+id,
+      method: 'DELETE',
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader('X-Authorization', loggedUser.token)
+      },
+      success: function(result) {
+        $.LoadingOverlay("hide");
+        toastr.success('Review deleted');
+        getMovieReviewByMovieId(globalMovieId);
+      },
+      error: function() {
+        $.LoadingOverlay("hide");
+        toastr.error('Review not deleted');
+      }
+    })
+  }
+
+  function deleteMovie(id) {
+    $.LoadingOverlay("show");
+    $.ajax({
+      url: 'rest/movie?id='+id,
+      method: 'DELETE',
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader('X-Authorization', loggedUser.token)
+      },
+      success: function(result) {
+        $.LoadingOverlay("hide");
+        toastr.success('Movie deleted');
+        setTimeout(function(){ window.location = 'index.html'; }, 1500);
+        $('.noReviewsDiv').hide();
+      },
+      error: function() {
+        $.LoadingOverlay("hide");
+        toastr.error('Movie not deleted');
+      }
+    })
+  }
+
+  function addToFavourites() {
+    $.LoadingOverlay("show");
+    if(loggedUser){
+      var user = JSON.parse(loggedUser);
+      $.ajax({
+        type :'POST',
+        url : 'rest/favourites',
+        beforeSend : function(xhr){
+          xhr.setRequestHeader('X-Authorization', user.token )
+        },
+        data : "&movie_id="+ globalMovieId + "&user_id="+user.id,
+        success: function(result) {
+          $.LoadingOverlay("hide");
+          toastr.success('Movie added to favourites.');
+          checkIfAddedToFavourites(globalMovieId);
+        },
+        error: function(err) {
+          $.LoadingOverlay("hide");
+          toastr.error('Movie not added to favourites.');
+          console.log(globalMovieId);
+          console.log(err);
+        }
+      });
+    }
+
+  }
+
+  function removeFromFavourites() {
+    $.LoadingOverlay("show");
+    if(loggedUser){
+      var user = JSON.parse(loggedUser);
+      $.ajax({
+        type :'DELETE',
+        url : 'rest/favourites-remove/'+user.id+'/'+globalMovieId,
+        success: function(result) {
+          $.LoadingOverlay("hide");
+          toastr.success('Movie removed from favourites.');
+          checkIfAddedToFavourites(globalMovieId);
+        },
+        error: function(err) {
+          $.LoadingOverlay("hide");
+          toastr.error('Movie not removed from favourites.');
+          console.log(err);
+        }
+      });
+    }
+
+  }
+
+  function getMovieById(id) {
+    $.LoadingOverlay("show");
+    $.get("rest/movie?id=" + id, function(data) {
+      console.log(data);
+      $('#movieImage').attr("src", data[0].image_url);
+      $('.movie-title').text(data[0].title);
+      $('.movie-description').text(data[0].description);
+
+      $.LoadingOverlay("hide");
+    })
+  }
+
+  function checkIfAddedToFavourites(movieId) {
+    var isFavourite = false;
+
+    if(loggedUser){
+      var user = JSON.parse(loggedUser);
+      console.log("this id"+movieId);
+      console.log("this userId"+user.id);
+      $.LoadingOverlay("show");
+      $.get("rest/favourites?user_id=" + user.id, function(data) {
+        console.log("fav data");
+        console.log("length"+data.length);
+          for(i=0; i<data.length;i++){
+            if(data[i].movieId == movieId){
+              isFavourite = true;
+              console.log("loop"+isFavourite);
+              $('.addToFavouritesBtn').hide();
+              $('.removeFromFavouritesBtn').show();
+            }
+          }
+        $.LoadingOverlay("hide");
+      })
+    }
+
+    if(isFavourite == true){
+      console.log("condition"+isFavourite);
+        $('.addToFavouritesBtn').hide();
+        $('.removeFromFavouritesBtn').show();
+    }
+
+    return isFavourite;
+  }
+
+  $('#addReviewForm').validate({
+    rules: {
+      reviewCommentText: {
+        required: true
+      }
+    },
+    messages: {
+      reviewCommentText: {
+        required: "Please enter your comment."
+      }
+    },
+    submitHandler: function(form, validator) {
+      //ajax call
+      $.LoadingOverlay("show");
+      $.ajax({
+        type :'POST',
+        url : 'rest/movie-review',
+        beforeSend : function(xhr){
+          xhr.setRequestHeader('X-Authorization', loggedUser.token )
+        },
+        data : "&movie_id="+ globalMovieId+"&" + $("#addReviewForm").serialize() + "&user_id="+loggedUser.id,
+        success: function(result) {
+          $.LoadingOverlay("hide");
+          toastr.success('Review added');
+          $('#addReviewModal').modal('toggle');
+          $('#addReviewForm')[0].reset();
+          getMovieReviewByMovieId(globalMovieId);
+        },
+        error: function() {
+          $.LoadingOverlay("hide");
+          toastr.error('Review not added');
+          console.log(globalMovieId);
+          getMovieReviewByMovieId(globalMovieId);
+        }
+      });
+    }
+  });
+</script>

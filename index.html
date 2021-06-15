@@ -1,0 +1,152 @@
+<html>
+
+<head>
+  <title>MyMovieDB</title>
+
+  <link rel="stylesheet" href="assets/css/spapp.css" />
+  <link rel="stylesheet" href="assets/css/custom.css" />
+  <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+  <link href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+
+</head>
+
+<body class="home-body">
+  <nav class="navbar navbar-custom-yellow navbar-expand-lg navbar-dark static-top">
+    <div class="container">
+      <a class="navbar-brand" href="#home">MyMovieDB</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link"  href="#home">Home</a>
+          </li>
+
+          <li class="nav-item user">
+            <a class="nav-link" href="#myProfile">My Profile</a>
+          </li>
+
+          <li class="nav-item user">
+            <a class="nav-link" href="#favourites">Favourites</a>
+          </li>
+
+          <li class="nav-item user">
+            <button class="nav-link" id="logoutBtn">Logout</button>
+          </li>
+
+          <li class="nav-item guest">
+            <button class="nav-link" id="loginbtn" data-toggle="modal" data-target="#loginModal">
+              Log in
+            </button>
+          </li>
+          <li class="nav-item guest">
+            <button class="nav-link" id="signupbtn" data-toggle="modal" data-target="#signUpModal">
+              Sign up
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Login modal -->
+  <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form id="loginForm">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Log in</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="exampleInputEmail1">Email address</label>
+              <input type="email" name="email" id="loginEmail" class="form-control" aria-describedby="emailHelp">
+            </div>
+            <div class="form-group">
+              <label for="exampleInputPassword1">Password</label>
+              <input type="password" name="password" id="loginPw" class="form-control">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-warning">Log in</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Signup modal -->
+  <div class="modal fade" id="signUpModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form id="signUpForm">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Sign up</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+
+            <div class="form-group">
+              <label for="exampleInputEmail1">First Name: </label>
+              <input type="text" name="firstName" id="fname" class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label for="exampleInputEmail1">Last Name: </label>
+              <input type="text" name="lastName" id="lname" class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label for="exampleInputEmail1">Email address</label>
+              <input type="email" id="userEmail" name="signUpEmail" class="form-control"  aria-describedby="emailHelp">
+            </div>
+
+            <div class="form-group">
+              <label for="exampleInputPassword1">Password: </label>
+              <input type="password" name="signUpPassword" id="mainPassword" class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label for="exampleInputPassword1">Confirm password: </label>
+              <input type="password" id="cfrmpassword" name="signUpConfirmPassword" class="form-control">
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-warning">Sign up</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+    <section id="home" src="tpl/home.html" default></section>
+    <section id="myProfile" src="tpl/myProfile.html"></section>
+    <section id="movieDetails" src="tpl/movieDetails.html"></section>
+    <section id="favourites" src="tpl/favourites.html"></section>
+
+</body>
+
+
+<script src="assets/js/jquery-3.1.0.min.js"></script>
+<script src="assets/js/jquery.spapp.js"></script>
+<script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script src="assets/js/custom.js"></script>
+
+</html>

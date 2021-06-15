@@ -1,0 +1,214 @@
+
+
+.navbar {
+    min-height: 100px;
+    background-color: #f1c232 !important;
+
+}
+
+.bg-dark{
+  background-color: #f1c232 !important;
+}
+
+.navbar-custom-yellow{
+  background-color: #f1c232 !important;
+
+}
+
+.navbar-brand{
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #000!important;
+}
+.nav-link{
+  font-size: 20px;
+  color: #000!important;
+
+}
+
+.home-body{
+  /* background-color: #292929; */
+
+  /* background: rgb(0,0,0);
+background: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(94,94,94,1) 48%, rgba(1,1,1,1) 100%); */
+
+background: rgb(0,0,0);
+/* background: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(36,36,36,1) 9%, rgba(255,213,86,1) 48%, rgba(1,1,1,1) 94%); */
+/* background: radial-gradient(circle, rgba(0,0,0,1) 0%, rgba(255,213,86,1) 0%, rgba(1,1,1,1) 78%); */
+}
+
+.searchBar{
+  width: 68%;
+  padding: 15px;
+  margin-bottom: 40px;
+}
+
+#search_bar_row{
+  text-align: center;
+
+}
+
+/* div.sticky{
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+} */
+
+.movie-title,.movie-description{
+  color: white;
+
+}
+
+.moviePoster{
+  width: 280px;
+  height: 400px;
+}
+
+.text-center{
+  height: 580px;
+  margin: 10px 0 10px 0;
+}
+
+.text-center h5 {
+  padding: 0 1.25rem 0 1.25rem;
+}
+
+.p--none {
+  padding: 0 !important;
+}
+
+#container {
+  padding: 50px 20px
+}
+
+#container h2 {
+  text-align: center;
+}
+
+.colors {
+  width: 400px;
+}
+
+.error {
+  color: red
+}
+
+#signupbtn, #loginbtn, #logoutBtn {
+  font-weight: bold;
+  cursor: pointer;
+  outline: none;
+  border: none;
+  background: transparent;
+}
+
+.user{
+  display: none;
+}
+
+.col{
+  margin-bottom: 20px;
+}
+
+.reviewbox{
+    width: 100%;
+    padding: 0;
+    border: 1px solid black;
+    margin-bottom: 20px;
+    height: 200px;
+    background-color: white;
+    position: relative;
+}
+
+.reviewdate{
+  opacity: 70%;
+
+    position: absolute;
+    bottom: 0;
+    right: 10px;
+}
+
+.deleteBtn{
+  border-radius: 8;
+}
+
+.reviewuser{
+    font-style: italic;
+    padding: 10px;
+    background-color: #f1c232;
+    color: #292929;
+}
+
+.comment{
+  padding: 20px 20px 0 20px;
+}
+
+#movieImage{
+  width: 100%;
+  max-width: 250px;
+  max-height: 300px;
+  border-radius: 8px;
+}
+
+.adminonly{
+  display: none;
+}
+
+
+.moviedetailsdiv{
+  padding: 15px;
+}
+
+.addReviewBtn{
+  margin-left: 15px;
+  margin-right: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.addToFavouritesBtn, .removeFromFavouritesBtn{
+  margin-top: 20px;
+}
+
+.removeMovieBtn{
+  margin-top: 20px;
+  margin-left: 10px;
+}
+
+.details{
+  color: white !important;
+  text-align: left;
+  margin-top: 100px;
+}
+.input-group-lg{
+  margin-bottom: 20px;
+}
+
+.firstNameLabel, .lastNameLabel, .emailLabel{
+  display: inline-block;
+  margin-bottom: 20px;
+}
+
+.detailsBtn {
+  margin-bottom: 25px;
+  background-color: #c1c1c1 !important;
+  color: #292929 !important;;
+  font-weight: 500 !important;
+  width: 100%;
+  border-radius: 0 !important;
+  border: none !important;
+}
+
+.detailsBtn:hover {
+  background-color: #ffc107 !important;
+  color: white !important;
+}
+
+.btn-warning,.addReviewBtn{
+  color: black !important;
+}
+
+
+/* .detailsBtn:hover {
+  background-color: #292929 !important;
+  color: white !important;
+} */

@@ -1,0 +1,100 @@
+<div id="container">
+  <h2>Members datatable example</h2>
+  <br>
+  <table id="example">
+
+  </table>
+  <br>
+  <br>
+</div>
+
+<script type="text/javascript">
+  var data = [
+  {
+    "name": "Blanca",
+    "dateOfBirth": "Wed Jul 06 2005 ",
+    "phoneNumber": "(811) 482-3587"
+  },
+  {
+    "name": "Michael",
+    "dateOfBirth": "Thu Dec 26 1991",
+    "phoneNumber": "(871) 512-2288"
+  },
+  {
+    "name": "Phoebe",
+    "dateOfBirth": "Fri May 20 2016",
+    "phoneNumber": "(916) 478-3363"
+  },
+  {
+    "name": "Sandra",
+    "dateOfBirth": "Tue Jul 01 1975",
+    "phoneNumber": "(826) 577-3031"
+  },
+  {
+    "name": "Sherman",
+    "dateOfBirth": "Mon Jul 25 2005",
+    "phoneNumber": "(883) 481-2406"
+  },
+  {
+    "name": "Cline",
+    "dateOfBirth": "Fri May 02 2014",
+    "phoneNumber": "(833) 598-2126"
+  },
+  {
+    "name": "Ball",
+    "dateOfBirth": "Sat Jan 08 2000",
+    "phoneNumber": "(818) 456-3639"
+  },
+  {
+    "name": "Reilly",
+    "dateOfBirth": "Sat Jun 29 1991",
+    "phoneNumber": "(835) 598-3195"
+  },
+  {
+    "name": "Ollie",
+    "dateOfBirth": "Mon Dec 30 2019",
+    "phoneNumber": "(813) 545-2196"
+  },
+  {
+    "name": "Angela",
+    "dateOfBirth": "Mon Sep 28 1987",
+    "phoneNumber": "(927) 585-3087"
+  },
+  {
+    "name": "Boyle",
+    "dateOfBirth": "Fri Sep 21 2001",
+    "phoneNumber": "(959) 504-3837"
+  },
+  {
+    "name": "Jennings",
+    "dateOfBirth": "Mon Aug 28 1978",
+    "phoneNumber": "(954) 524-3284"
+  },
+  {
+    "name": "Thornton",
+    "dateOfBirth": "Sat Sep 30 1972",
+    "phoneNumber": "(832) 413-2436"
+  },
+  {
+    "name": "Isabelle",
+    "dateOfBirth": "Wed Jan 30 1985",
+    "phoneNumber": "(963) 529-3000"
+  },
+  {
+    "name": "Marcia",
+    "dateOfBirth": "Mon Jul 25 2011",
+    "phoneNumber": "(998) 427-3337"
+  }
+]
+
+  $(document).ready(function() {
+    $('#example').DataTable({
+      data: data,
+      columns:[
+        { data : 'name', title :"Name","orderable": true },
+        { data : 'dateOfBirth', title : "Date of birth", "orderable": false},
+        { data : 'phoneNumber', title : "Phone number", "orderable": false},
+      ]
+    });
+  });
+</script>

@@ -1,0 +1,13 @@
+/* all sections are off by default */
+body > section { display:none; }
+/* app state -> view visibility rules: */
+body.home > section#home,
+body.favourites > section#favourites,
+body.movieDetails > section#movieDetails,
+body.myProfile > section#myProfile  { display:block; }
+
+/* nav highlightion rules */
+body.home > nav > a[href="#home"],
+body.favourites > nav > a[href="#favourites"],
+body.movieDetails > nav > a[href="#movieDetails"],
+body.myProfile > nav > a[href="#myProfile"] { background:red; color:yellow; }
